@@ -1,0 +1,28 @@
+version: '3.7'
+services:
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - ./mongo-data:/data/db
+
+  app:
+    build:
+      context: .
+    depends_on:
+      - db
+    env_file:
+      - src/.env
+    ports:
+      - '8000:8000'
+
+  nginx:
+    image: nginx:1.19.8
+    depends_on:
+     - app
+    ports:
+      - '80:80'
+    volumes:
+      - ./nginx-conf.d:/etc/nginx/conf.d
